@@ -9,8 +9,80 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="unicredit.voicerecognition.MainMenuActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!" />
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent" android:layout_height="fill_parent"
+        android:id="@+id/layoutContainer" android:orientation="horizontal">
+        <RelativeLayout
+            android:layout_width="0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight="0.15">
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight="0.7">
+
+            <!-- This is the part that's 70% of the total width. I'm inserting a LinearLayout and buttons.-->
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:orientation="vertical">
+
+                <Button
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/holo_blue_dark"
+                    android:textColor="@android:color/white"
+                    android:shadowColor="@android:color/holo_blue_light"
+                    android:id="@+id/button1"
+                    android:text="Voice -  Text"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:layout_marginBottom="@dimen/activity_vertical_margin"
+                    />
+
+                <Button
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Text - Voice"
+                    android:id="@+id/button2"
+                    android:background="@android:color/holo_blue_dark"
+                    android:textColor="@android:color/white"
+                    android:shadowColor="@android:color/holo_blue_light"
+                    android:layout_marginBottom="@dimen/activity_vertical_margin"
+                    />
+
+                <Button
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Settings"
+                    android:id="@+id/button3"
+                    android:background="@android:color/holo_blue_dark"
+                    android:textColor="@android:color/white"
+                    android:shadowColor="@android:color/holo_blue_light"
+                    android:layout_marginBottom="@dimen/activity_vertical_margin"
+                    />
+
+                <Button
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="About"
+                    android:id="@+id/button4"
+                    android:background="@android:color/holo_blue_dark"
+                    android:textColor="@android:color/white"
+                    android:shadowColor="@android:color/holo_blue_light"
+                    />
+
+            </LinearLayout>
+            <!-- 70% Width End-->
+
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight="0.15">
+        </RelativeLayout>
+    </LinearLayout>
+
+
 </RelativeLayout>
