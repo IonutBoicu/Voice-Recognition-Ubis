@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">VoiceRecognition</string>
+    <string name="button_text">Record</string>
+    <string name="enter_text_to_write">Write here</string>
+</resources>
