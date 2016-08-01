@@ -10,7 +10,7 @@
     tools:context="unicredit.voicerecognition.MainMenuActivity">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="fill_parent" android:layout_height="fill_parent"
+        android:layout_width="match_parent" android:layout_height="match_parent"
         android:id="@+id/layoutContainer" android:orientation="horizontal">
         <RelativeLayout
             android:layout_width="0dip"
@@ -34,7 +34,6 @@
                     android:layout_height="wrap_content"
                     android:background="@android:color/holo_blue_dark"
                     android:textColor="@android:color/white"
-                    android:shadowColor="@android:color/holo_blue_light"
                     android:id="@+id/button1"
                     android:text="Voice -  Text"
                     android:layout_marginTop="@dimen/activity_vertical_margin"
@@ -48,7 +47,6 @@
                     android:id="@+id/button2"
                     android:background="@android:color/holo_blue_dark"
                     android:textColor="@android:color/white"
-                    android:shadowColor="@android:color/holo_blue_light"
                     android:layout_marginBottom="@dimen/activity_vertical_margin"
                     />
 
@@ -59,7 +57,6 @@
                     android:id="@+id/button3"
                     android:background="@android:color/holo_blue_dark"
                     android:textColor="@android:color/white"
-                    android:shadowColor="@android:color/holo_blue_light"
                     android:layout_marginBottom="@dimen/activity_vertical_margin"
                     />
 
@@ -70,7 +67,6 @@
                     android:id="@+id/button4"
                     android:background="@android:color/holo_blue_dark"
                     android:textColor="@android:color/white"
-                    android:shadowColor="@android:color/holo_blue_light"
                     />
 
             </LinearLayout>
