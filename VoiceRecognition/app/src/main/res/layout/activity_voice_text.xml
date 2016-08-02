@@ -31,7 +31,6 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_volume_mute_black_24dp"
-            android:visibility="gone"
             android:id="@+id/low_volume"/>
         <ImageView
             android:layout_above="@id/recButton"

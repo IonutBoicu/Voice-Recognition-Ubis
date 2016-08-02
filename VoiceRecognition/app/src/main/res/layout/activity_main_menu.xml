@@ -49,6 +49,7 @@
                     android:background="@android:color/holo_blue_dark"
                     android:textColor="@android:color/white"
                     android:layout_marginBottom="@dimen/activity_vertical_margin"
+                    android:onClick="startTextVoice"
                     />
 
                 <Button
@@ -59,6 +60,7 @@
                     android:background="@android:color/holo_blue_dark"
                     android:textColor="@android:color/white"
                     android:layout_marginBottom="@dimen/activity_vertical_margin"
+                    android:onClick="startSettings"
                     />
 
                 <Button
@@ -68,6 +70,8 @@
                     android:id="@+id/button4"
                     android:background="@android:color/holo_blue_dark"
                     android:textColor="@android:color/white"
+                    android:layout_marginBottom="@dimen/activity_vertical_margin"
+                    android:onClick="startAbout"
                     />
 
             </LinearLayout>

@@ -17,4 +17,19 @@ public class MainMenuActivity extends AppCompatActivity {
         Intent intent = new Intent(this, VoiceTextActivity.class);
         startActivity(intent);
     }
+
+    public void startTextVoice(View view) {
+        Intent intent = new Intent(this, TextVoiceActivity.class);
+        startActivity(intent);
+    }
+
+    public void startSettings(View view) {
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
+    }
+
+    public void startAbout(View view) {
+        Intent intent = new Intent(this, AboutActivity.class);
+        startActivity(intent);
+    }
 }
