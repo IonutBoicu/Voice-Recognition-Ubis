@@ -6,7 +6,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <EditText
-            android:id="@+id/TextBoxVR"
+            android:id="@+id/recTextBox"
             android:layout_width="wrap_content"
             android:layout_height="200dp"
             android:hint="@string/enter_text_to_write"
@@ -20,26 +20,28 @@
             android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:drawableLeft="@drawable/ic_mic_black_24dp"
-            android:id="@+id/button"
+            android:id="@+id/recButton"
+            android:background="@android:color/transparent"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:background="@android:color/transparent"/>
+            android:enabled="true"
+            android:onClick="speak" />
         <ImageView
-            android:layout_above="@id/button"
+            android:layout_above="@id/recButton"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_volume_mute_black_24dp"
             android:visibility="gone"
             android:id="@+id/low_volume"/>
         <ImageView
-            android:layout_above="@id/button"
+            android:layout_above="@id/recButton"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_volume_down_black_24dp"
             android:visibility="gone"
             android:id="@+id/avg_volume"/>
         <ImageView
-            android:layout_above="@id/button"
+            android:layout_above="@id/recButton"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_volume_up_black_24dp"
