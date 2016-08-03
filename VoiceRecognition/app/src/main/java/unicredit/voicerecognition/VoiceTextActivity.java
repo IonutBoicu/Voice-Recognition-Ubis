@@ -31,6 +31,7 @@ public class VoiceTextActivity extends Activity{
         setContentView(R.layout.activity_voice_text);
         recBut = (Button) findViewById(R.id.recButton);
         edText = (EditText) findViewById(R.id.recTextBox);
+        edText.setKeyListener(null);
         checkVoiceRecognition();
     }
 
