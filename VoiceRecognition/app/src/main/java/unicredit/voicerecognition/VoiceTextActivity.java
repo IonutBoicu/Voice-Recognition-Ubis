@@ -35,6 +35,10 @@ public class VoiceTextActivity extends Activity{
         checkVoiceRecognition();
     }
 
+    public void goBack(View view) {
+        super.onBackPressed();
+    }
+
     public void checkVoiceRecognition() {
         // Check if voice recognition is present
         PackageManager pm = getPackageManager();
