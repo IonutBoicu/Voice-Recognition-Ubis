@@ -29,11 +29,11 @@
         <Button
             android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_replay_black_24dp"
+            android:drawableLeft="@drawable/ic_view_headline_black_24dp"
             android:id="@+id/backBtn"
             android:background="@android:color/transparent"
             android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="true"
+            android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:enabled="true"
             android:onClick="goBack" />
