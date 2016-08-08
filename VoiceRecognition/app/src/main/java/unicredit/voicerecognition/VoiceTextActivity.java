@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -87,12 +88,23 @@ public class VoiceTextActivity extends Activity{
                     // If first Match contains the 'search' word
                     // Then start web search.
                     if (textMatchList.get(0).contains("search")) {
+                        EditText editText = (EditText)findViewById(R.id.recTextBox);
 
                         String searchQuery = textMatchList.get(0);
+                        String myQuery = "" + textMatchList.size();
+                        for (int i = 0; i < textMatchList.size(); i++)
+                            myQuery += textMatchList.get(i) + " ";
+                        editText.setText(myQuery, TextView.BufferType.EDITABLE);
                         searchQuery = searchQuery.replace("search","");
                         Intent search = new Intent(Intent.ACTION_WEB_SEARCH);
                         search.putExtra(SearchManager.QUERY, searchQuery);
                         startActivity(search);
+                    } else {
+                        EditText editText = (EditText)findViewById(R.id.recTextBox);
+                        String myQuery = "" + textMatchList.size();
+                        for (int i = 0; i < textMatchList.size(); i++)
+                            myQuery += textMatchList.get(i) + " ";
+                        editText.setText(myQuery, TextView.BufferType.EDITABLE);
                     }
                 }
                 //Result code for various error.
