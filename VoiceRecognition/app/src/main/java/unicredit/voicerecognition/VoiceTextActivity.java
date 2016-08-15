@@ -61,15 +61,15 @@ public class VoiceTextActivity extends Activity{
                 .getPackage().getName());
 
         // Display an hint to the user about what he should say.
-        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, edText.getText()
-                .toString());
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, R.string.speak_now);
 
         // Given an hint to the recognizer about what the user is going to say
         //There are two form of language model available
         //1.LANGUAGE_MODEL_WEB_SEARCH : For short phrases
         //2.LANGUAGE_MODEL_FREE_FORM  : If not sure about the words or phrases and its domain.
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-                RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH);
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ro");
 
         startActivityForResult(intent, VOICE_RECOGNITION_REQUEST_CODE);
     }
@@ -85,25 +85,10 @@ public class VoiceTextActivity extends Activity{
                         .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
 
                 if (!textMatchList.isEmpty()) {
-                    // If first Match contains the 'search' word
-                    // Then start web search.
-                    if (textMatchList.get(0).contains("search")) {
-                        EditText editText = (EditText)findViewById(R.id.recTextBox);
-
-                        String searchQuery = textMatchList.get(0);
-                        String myQuery = "";
-                        myQuery += textMatchList.get(1);
-                        editText.setText(myQuery, TextView.BufferType.EDITABLE);
-                        searchQuery = searchQuery.replace("search","");
-                        Intent search = new Intent(Intent.ACTION_WEB_SEARCH);
-                        search.putExtra(SearchManager.QUERY, searchQuery);
-                        startActivity(search);
-                    } else {
-                        EditText editText = (EditText)findViewById(R.id.recTextBox);
-                        String myQuery = "";
-                        myQuery += textMatchList.get(0);
-                        editText.setText(myQuery, TextView.BufferType.EDITABLE);
-                    }
+                    EditText editText = (EditText)findViewById(R.id.recTextBox);
+                    String myQuery = "";
+                    myQuery += textMatchList.get(0);
+                    editText.setText(myQuery, TextView.BufferType.EDITABLE);
                 }
                 //Result code for various error.
             }else if(resultCode == RecognizerIntent.RESULT_AUDIO_ERROR){
