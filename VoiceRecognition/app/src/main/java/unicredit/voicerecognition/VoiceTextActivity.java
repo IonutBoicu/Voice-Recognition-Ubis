@@ -91,9 +91,8 @@ public class VoiceTextActivity extends Activity{
                         EditText editText = (EditText)findViewById(R.id.recTextBox);
 
                         String searchQuery = textMatchList.get(0);
-                        String myQuery = "" + textMatchList.size();
-                        for (int i = 0; i < textMatchList.size(); i++)
-                            myQuery += textMatchList.get(i) + " ";
+                        String myQuery = "";
+                        myQuery += textMatchList.get(1);
                         editText.setText(myQuery, TextView.BufferType.EDITABLE);
                         searchQuery = searchQuery.replace("search","");
                         Intent search = new Intent(Intent.ACTION_WEB_SEARCH);
@@ -101,9 +100,8 @@ public class VoiceTextActivity extends Activity{
                         startActivity(search);
                     } else {
                         EditText editText = (EditText)findViewById(R.id.recTextBox);
-                        String myQuery = "" + textMatchList.size();
-                        for (int i = 0; i < textMatchList.size(); i++)
-                            myQuery += textMatchList.get(i) + " ";
+                        String myQuery = "";
+                        myQuery += textMatchList.get(0);
                         editText.setText(myQuery, TextView.BufferType.EDITABLE);
                     }
                 }
