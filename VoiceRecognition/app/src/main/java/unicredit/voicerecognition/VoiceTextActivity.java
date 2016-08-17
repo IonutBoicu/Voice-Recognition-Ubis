@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +26,8 @@ public class VoiceTextActivity extends Activity{
 
     private Button recBut;
     private EditText edText;
+
+    float[] pattern_data;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,11 +49,130 @@ public class VoiceTextActivity extends Activity{
         List<ResolveInfo> activities = pm.queryIntentActivities(new Intent(
                 RecognizerIntent.ACTION_RECOGNIZE_SPEECH), 0);
         if (activities.size() == 0) {
+            onDataAvailable(null);
             recBut.setEnabled(false);
             edText.setText("Voice recognizer not present");
             Toast.makeText(this, "Voice recognizer not present",
                     Toast.LENGTH_SHORT).show();
         }
+    }
+
+    /**
+     * Bit reversal, used for FFT.
+     *
+     * @param data - in/out data
+     */
+    static void bit_reversal(float[] data)
+    {
+        int i, j;
+        int n, m, nn;
+        float cop;
+
+        nn = data.length;
+        n = nn * 2;
+        j = 0;
+
+        for (i = 0; i < nn; i += 2) {
+            if (j > i) {
+			/* swap the real part */
+                cop = data[j];
+                data[j] = data[i];
+                data[i] = cop;
+
+			/* swap the complex part */
+                cop = data[j+1];
+                data[j+1] = data[i+1];
+                data[i+1] = cop;
+
+			/*
+			 * checks if the changes occurs in the first half
+			 * and use the mirrored effect on the second half
+			 */
+                if (j / 2 < n / 4) {
+				/* swap the real part */
+                    cop = data[n - (j + 2)];
+                    data[n - (j + 2)] = data[n - (i + 2)];
+                    data[n - (i + 2)] = cop;
+
+				/* swap the complex part */
+                    cop = data[n - (j + 2) + 1];
+                    data[n - (j + 2) + 1] = data[n - (i + 2) + 1];
+                    data[n - (i + 2) + 1] = cop;
+                }
+            }
+
+            m = n / 2;
+
+            while (m >= 2 && j >= m) {
+                j -= m;
+                m /= 2;
+            }
+
+            j += m;
+        }
+    }
+
+    /**
+     * Fast Fourier transform.
+     *
+     * @param data - in/out data (in - sample, out - frequency)
+     */
+    void fft(float[] data)
+    {
+        int n, m, mmax, istep, i, j, nn;
+        double wtemp, wr, wpr, wpi, wi, theta;
+        float tempr, tempi;
+
+        nn = data.length;
+        n = nn * 2;
+        bit_reversal(data);
+
+        mmax = 2;
+        while (n > mmax) {
+            istep = mmax * 2;
+            theta = 2 * Math.PI / mmax;
+            wtemp = Math.sin(0.5 * theta);
+
+            wpr = -2.0 * wtemp * wtemp;
+            wpi = Math.sin(theta);
+
+            wr = 1.0;
+            wi = 0.0;
+
+            for (m = 1; m < mmax; m += 2) {
+                for (i = m; i <= n; i += istep) {
+                    j = i + mmax;
+
+                    tempr = (float)(wr * data[j - 1] - wi * data[j]);
+                    tempi = (float)(wr * data[j] + wi * data[j - 1]);
+
+                    data[j - 1] = data[i - 1] - tempr;
+                    data[j] = data[i] - tempi;
+                    data[i - 1] += tempr;
+                    data[i] += tempi;
+                }
+
+                wr = (wtemp = wr) * wpr - wi * wpi + wr;
+                wi = wi * wpr + wtemp * wpi + wi;
+            }
+
+            mmax = istep;
+        }
+    }
+
+    public void onDataAvailable(float[] raw_data) {
+        if (raw_data == null)
+            return;
+
+        pattern_data = new float[raw_data.length * 2];
+
+        /* use complex numbers */
+        for (int i = 0; i < pattern_data.length; i += 2) {
+            pattern_data[i] = raw_data[i];
+            pattern_data[i + 1] = 0;
+        }
+
+        fft(pattern_data);
     }
 
     public void speak(View view) {
@@ -69,7 +191,6 @@ public class VoiceTextActivity extends Activity{
         //2.LANGUAGE_MODEL_FREE_FORM  : If not sure about the words or phrases and its domain.
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
                 RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ro");
 
         startActivityForResult(intent, VOICE_RECOGNITION_REQUEST_CODE);
     }
