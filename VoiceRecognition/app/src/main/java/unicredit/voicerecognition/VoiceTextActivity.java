@@ -191,7 +191,7 @@ public class VoiceTextActivity extends Activity{
         //2.LANGUAGE_MODEL_FREE_FORM  : If not sure about the words or phrases and its domain.
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
                 RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ro");
         startActivityForResult(intent, VOICE_RECOGNITION_REQUEST_CODE);
     }
 
