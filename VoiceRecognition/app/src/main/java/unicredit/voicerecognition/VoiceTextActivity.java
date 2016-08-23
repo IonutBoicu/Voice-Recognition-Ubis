@@ -23,6 +23,8 @@ import java.util.List;
  */
 public class VoiceTextActivity extends Activity{
     private static final int VOICE_RECOGNITION_REQUEST_CODE = 1001;
+    public static final String EXTRA_PATTERN_DATA = "android.speech.extra.PATTERN_DATA";
+    public static final String EXTRA_DEFAULT_WEB_SEARCH_ACTION = "android.speech.extra.DEFAULT_WEB_SEARCH_ACTION";
 
     private Button recBut;
     private EditText edText;
@@ -177,6 +179,10 @@ public class VoiceTextActivity extends Activity{
 
     public void speak(View view) {
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        
+        intent.putExtra(EXTRA_PATTERN_DATA, pattern_data);
+        
+        intent.putExtra(EXTRA_DEFAULT_WEB_SEARCH_ACTION, false);
 
         // Specify the calling package to identify your application
         intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getClass()
