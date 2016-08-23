@@ -198,6 +198,13 @@ public class VoiceTextActivity extends Activity{
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
                 RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ro");
+
+        // The amount of time that it should take after we stop hearing any
+        // speech to consider the input complete
+        intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 5000);
+        // The amount of time that it should take after we stop hearing any
+        // speech to consider input POSSIBLY complete
+        intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, 5000);
         startActivityForResult(intent, VOICE_RECOGNITION_REQUEST_CODE);
     }
 
