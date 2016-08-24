@@ -7,6 +7,10 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -21,7 +25,7 @@ import java.util.List;
 /**
  * Created by John on 8/1/2016.
  */
-public class VoiceTextActivity extends Activity{
+public class VoiceTextActivity extends AppCompatActivity{
     private static final int VOICE_RECOGNITION_REQUEST_CODE = 1001;
     public static final String EXTRA_PATTERN_DATA = "android.speech.extra.PATTERN_DATA";
     public static final String EXTRA_DEFAULT_WEB_SEARCH_ACTION = "android.speech.extra.DEFAULT_WEB_SEARCH_ACTION";
@@ -35,6 +39,8 @@ public class VoiceTextActivity extends Activity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.setTitle("Voice to Text");
+
         setContentView(R.layout.activity_voice_text);
         recBut = (Button) findViewById(R.id.recButton);
         edText = (EditText) findViewById(R.id.recTextBox);
@@ -42,8 +48,34 @@ public class VoiceTextActivity extends Activity{
         checkVoiceRecognition();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // action with ID action_refresh was selected
+            case R.id.action_mainmenu:
+                super.onBackPressed();
+                break;
+            default:
+                break;
+        }
+
+        return true;
+    }
+
     public void goBack(View view) {
         super.onBackPressed();
+    }
+
+    public void rotateTextBox (View view) {
+        edText.setRotation((edText.getRotation() + 180) % 360);
     }
 
     public void checkVoiceRecognition() {
@@ -180,9 +212,9 @@ public class VoiceTextActivity extends Activity{
 
     public void speak(View view) {
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        
+
         intent.putExtra(EXTRA_PATTERN_DATA, pattern_data);
-        
+
         intent.putExtra(EXTRA_DEFAULT_WEB_SEARCH_ACTION, false);
 
         // Specify the calling package to identify your application

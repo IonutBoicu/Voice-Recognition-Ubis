@@ -16,7 +16,8 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
+            android:layout_alignParentEnd="true"
+            android:background="@android:color/darker_gray"/>
         <Button
             android:layout_width="50dp"
             android:layout_height="wrap_content"
@@ -36,8 +37,19 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:enabled="true"
+            android:visibility="gone"
+            android:enabled="false"
             android:onClick="goBack" />
+        <Button
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/ic_replay_black_24dp"
+            android:background="@android:color/transparent"
+            android:layout_below="@+id/recTextBox"
+            android:layout_toRightOf="@+id/backBtn"
+            android:layout_toEndOf="@+id/backBtn"
+            android:id="@+id/rotateText"
+            android:onClick="rotateTextBox"/>
         <ImageView
             android:layout_above="@id/recButton"
             android:layout_width="fill_parent"
