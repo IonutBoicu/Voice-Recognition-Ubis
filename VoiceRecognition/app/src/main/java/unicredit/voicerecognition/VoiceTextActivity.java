@@ -29,6 +29,7 @@ public class VoiceTextActivity extends Activity{
     private Button recBut;
     private EditText edText;
 
+    boolean loopValue = true;
     float[] pattern_data;
 
     @Override
@@ -198,13 +199,11 @@ public class VoiceTextActivity extends Activity{
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
                 RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ro");
-
-        // The amount of time that it should take after we stop hearing any
-        // speech to consider the input complete
-        intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 5000);
-        // The amount of time that it should take after we stop hearing any
-        // speech to consider input POSSIBLY complete
-        intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, 5000);
+        if (loopValue == false) {
+            loopValue = true;
+            EditText editText = (EditText)findViewById(R.id.recTextBox);
+            editText.setText("", TextView.BufferType.EDITABLE);
+        }
         startActivityForResult(intent, VOICE_RECOGNITION_REQUEST_CODE);
     }
 
@@ -220,23 +219,34 @@ public class VoiceTextActivity extends Activity{
 
                 if (!textMatchList.isEmpty()) {
                     EditText editText = (EditText)findViewById(R.id.recTextBox);
-                    String myQuery = "";
-                    myQuery += textMatchList.get(0);
-                    editText.setText(myQuery, TextView.BufferType.EDITABLE);
+                    String oldText = editText.getText().toString();
+                    String newText = "";
+                    newText += textMatchList.get(0);
+                    if (newText.equals("")) {
+                        loopValue = false;
+                    }
+                    editText.setText(oldText + newText, TextView.BufferType.EDITABLE);
                 }
                 //Result code for various error.
-            }else if(resultCode == RecognizerIntent.RESULT_AUDIO_ERROR){
+            }else if(resultCode == RecognizerIntent.RESULT_AUDIO_ERROR) {
                 showToastMessage("Audio Error");
-            }else if(resultCode == RecognizerIntent.RESULT_CLIENT_ERROR){
+            }else if(resultCode == RecognizerIntent.RESULT_CLIENT_ERROR) {
                 showToastMessage("Client Error");
-            }else if(resultCode == RecognizerIntent.RESULT_NETWORK_ERROR){
+            }else if(resultCode == RecognizerIntent.RESULT_NETWORK_ERROR) {
                 showToastMessage("Network Error");
-            }else if(resultCode == RecognizerIntent.RESULT_NO_MATCH){
+            }else if(resultCode == RecognizerIntent.RESULT_NO_MATCH) {
                 showToastMessage("No Match");
-            }else if(resultCode == RecognizerIntent.RESULT_SERVER_ERROR){
+            }else if(resultCode == RecognizerIntent.RESULT_SERVER_ERROR) {
                 showToastMessage("Server Error");
+            }else if(resultCode == RESULT_CANCELED) {
+                showToastMessage("Canceled");
+                loopValue = false;
             }
         super.onActivityResult(requestCode, resultCode, data);
+        if (loopValue == true) {
+
+            recBut.callOnClick();
+        }
     }
     /**
      * Helper method to show the toast message
