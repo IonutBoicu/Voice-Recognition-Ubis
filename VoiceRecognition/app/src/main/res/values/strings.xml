@@ -2,5 +2,5 @@
     <string name="app_name">VoiceRecognition</string>
     <string name="button_text">Record</string>
     <string name="enter_text_to_write">Text is displayed here...</string>
-    <string name="speak_now">Speak now</string>
+    <string name="speak_now">Speak now / Tap to close</string>
 </resources>
