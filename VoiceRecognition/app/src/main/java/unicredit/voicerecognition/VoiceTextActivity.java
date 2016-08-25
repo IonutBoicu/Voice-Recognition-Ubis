@@ -257,7 +257,7 @@ public class VoiceTextActivity extends AppCompatActivity{
                     if (newText.equals("")) {
                         loopValue = false;
                     }
-                    editText.setText(oldText + newText, TextView.BufferType.EDITABLE);
+                    editText.setText(oldText + newText + " ", TextView.BufferType.EDITABLE);
                 }
                 //Result code for various error.
             }else if(resultCode == RecognizerIntent.RESULT_AUDIO_ERROR) {
