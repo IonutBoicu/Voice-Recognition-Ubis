@@ -5,12 +5,17 @@ import android.app.SearchManager;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.net.Uri;
 import android.os.Bundle;
+import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
+import android.speech.SpeechRecognizer;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -25,16 +30,124 @@ import java.util.List;
 /**
  * Created by John on 8/1/2016.
  */
-public class VoiceTextActivity extends AppCompatActivity{
+public class VoiceTextActivity extends AppCompatActivity {
     private static final int VOICE_RECOGNITION_REQUEST_CODE = 1001;
     public static final String EXTRA_PATTERN_DATA = "android.speech.extra.PATTERN_DATA";
     public static final String EXTRA_DEFAULT_WEB_SEARCH_ACTION = "android.speech.extra.DEFAULT_WEB_SEARCH_ACTION";
 
+    private String LOG_TAG = "VoiceRecognitionActivity";
+
     private Button recBut;
     private EditText edText;
 
+    private SpeechRecognizer speech = null;
+    private Intent recognizerIntent = null;
+
+    boolean recordStatus = false;
     boolean loopValue = true;
     float[] pattern_data;
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (speech != null) {
+            speech.destroy();
+            Log.i(LOG_TAG, "destroy");
+        }
+
+    }
+
+    protected class SpeechRecognitionListener implements RecognitionListener {
+
+        @Override
+        public void onResults(Bundle results) {
+            ArrayList<String> matches = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+            // matches are the return values of speech recognition engine
+            // Use these values for whatever you wish to do
+            edText.setText(matches.get(0), TextView.BufferType.EDITABLE);
+        }
+
+        @Override
+        public void onPartialResults(Bundle bundle) {
+
+        }
+
+        @Override
+        public void onEvent(int i, Bundle bundle) {
+
+        }
+
+        @Override
+        public void onReadyForSpeech(Bundle bundle) {
+
+        }
+
+        @Override
+        public void onBeginningOfSpeech() {
+            Log.i(LOG_TAG, "onBeginningOfSpeech");
+        }
+
+        @Override
+        public void onRmsChanged(float rmsdB) {
+        }
+
+        @Override
+        public void onBufferReceived(byte[] bytes) {
+
+        }
+
+        @Override
+        public void onEndOfSpeech() {
+            Log.i(LOG_TAG, "onEndOfSpeech");
+        }
+
+        @Override
+        public void onError(int i) {
+            Log.d(LOG_TAG, "FAILED " + getErrorText(i));
+        }
+
+        public String getErrorText(int errorCode) {
+            String message;
+            switch (errorCode) {
+                case SpeechRecognizer.ERROR_AUDIO:
+                    message = "Audio recording error";
+                    break;
+                case SpeechRecognizer.ERROR_CLIENT:
+                    message = "Client side error";
+                    break;
+                case SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS:
+                    message = "Insufficient permissions";
+                    break;
+                case SpeechRecognizer.ERROR_NETWORK:
+                    message = "Network error";
+                    break;
+                case SpeechRecognizer.ERROR_NETWORK_TIMEOUT:
+                    message = "Network timeout";
+                    break;
+                case SpeechRecognizer.ERROR_NO_MATCH:
+                    message = "No match";
+                    break;
+                case SpeechRecognizer.ERROR_RECOGNIZER_BUSY:
+                    message = "RecognitionService busy";
+                    break;
+                case SpeechRecognizer.ERROR_SERVER:
+                    message = "error from server";
+                    break;
+                case SpeechRecognizer.ERROR_SPEECH_TIMEOUT:
+                    message = "No speech input";
+                    break;
+                default:
+                    message = "Didn't understand, please try again.";
+                    break;
+            }
+            return message;
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +159,46 @@ public class VoiceTextActivity extends AppCompatActivity{
         edText = (EditText) findViewById(R.id.recTextBox);
         edText.setKeyListener(null);
         checkVoiceRecognition();
+
+        speech = SpeechRecognizer.createSpeechRecognizer(this);
+        speech.setRecognitionListener(new SpeechRecognitionListener());
+
+        recognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        recognizerIntent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getClass()
+                .getPackage().getName());
+        recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,
+                "ro");
+
+//        recBut.setOnTouchListener(new View.OnTouchListener()
+//        {
+//
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event)
+//            {
+//                if (event.getAction() == MotionEvent.ACTION_DOWN)
+//                    speech.startListening(recognizerIntent);
+//                else if (event.getAction() == MotionEvent.ACTION_UP)
+//                    speech.stopListening();
+//
+//                return true;
+//            }
+//        });
+
+        recBut.setOnClickListener(new View.OnClickListener() {
+                                      @Override
+                                      public void onClick(View view) {
+                                          if (recordStatus == false) {
+                                              recordStatus = true;
+                                              speech.startListening(recognizerIntent);
+                                          } else {
+                                              recordStatus = false;
+                                              speech.stopListening();
+                                          }
+                                      }
+                                  }
+        );
     }
 
     @Override
@@ -74,7 +227,7 @@ public class VoiceTextActivity extends AppCompatActivity{
         super.onBackPressed();
     }
 
-    public void rotateTextBox (View view) {
+    public void rotateTextBox(View view) {
         edText.setRotation((edText.getRotation() + 180) % 360);
     }
 
@@ -97,8 +250,7 @@ public class VoiceTextActivity extends AppCompatActivity{
      *
      * @param data - in/out data
      */
-    static void bit_reversal(float[] data)
-    {
+    static void bit_reversal(float[] data) {
         int i, j;
         int n, m, nn;
         float cop;
@@ -109,15 +261,15 @@ public class VoiceTextActivity extends AppCompatActivity{
 
         for (i = 0; i < nn; i += 2) {
             if (j > i) {
-			/* swap the real part */
+            /* swap the real part */
                 cop = data[j];
                 data[j] = data[i];
                 data[i] = cop;
 
 			/* swap the complex part */
-                cop = data[j+1];
-                data[j+1] = data[i+1];
-                data[i+1] = cop;
+                cop = data[j + 1];
+                data[j + 1] = data[i + 1];
+                data[i + 1] = cop;
 
 			/*
 			 * checks if the changes occurs in the first half
@@ -152,8 +304,7 @@ public class VoiceTextActivity extends AppCompatActivity{
      *
      * @param data - in/out data (in - sample, out - frequency)
      */
-    void fft(float[] data)
-    {
+    void fft(float[] data) {
         int n, m, mmax, istep, i, j, nn;
         double wtemp, wr, wpr, wpi, wi, theta;
         float tempr, tempi;
@@ -178,8 +329,8 @@ public class VoiceTextActivity extends AppCompatActivity{
                 for (i = m; i <= n; i += istep) {
                     j = i + mmax;
 
-                    tempr = (float)(wr * data[j - 1] - wi * data[j]);
-                    tempi = (float)(wr * data[j] + wi * data[j - 1]);
+                    tempr = (float) (wr * data[j - 1] - wi * data[j]);
+                    tempi = (float) (wr * data[j] + wi * data[j - 1]);
 
                     data[j - 1] = data[i - 1] - tempr;
                     data[j] = data[i] - tempi;
@@ -233,7 +384,7 @@ public class VoiceTextActivity extends AppCompatActivity{
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ro");
         if (loopValue == false) {
             loopValue = true;
-            EditText editText = (EditText)findViewById(R.id.recTextBox);
+            EditText editText = (EditText) findViewById(R.id.recTextBox);
             editText.setText("", TextView.BufferType.EDITABLE);
         }
         startActivityForResult(intent, VOICE_RECOGNITION_REQUEST_CODE);
@@ -244,13 +395,13 @@ public class VoiceTextActivity extends AppCompatActivity{
         if (requestCode == VOICE_RECOGNITION_REQUEST_CODE)
 
             //If Voice recognition is successful then it returns RESULT_OK
-            if(resultCode == RESULT_OK) {
+            if (resultCode == RESULT_OK) {
 
                 ArrayList<String> textMatchList = data
                         .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
 
                 if (!textMatchList.isEmpty()) {
-                    EditText editText = (EditText)findViewById(R.id.recTextBox);
+                    EditText editText = (EditText) findViewById(R.id.recTextBox);
                     String oldText = editText.getText().toString();
                     String newText = "";
                     newText += textMatchList.get(0);
@@ -260,17 +411,17 @@ public class VoiceTextActivity extends AppCompatActivity{
                     editText.setText(oldText + newText + " ", TextView.BufferType.EDITABLE);
                 }
                 //Result code for various error.
-            }else if(resultCode == RecognizerIntent.RESULT_AUDIO_ERROR) {
+            } else if (resultCode == RecognizerIntent.RESULT_AUDIO_ERROR) {
                 showToastMessage("Audio Error");
-            }else if(resultCode == RecognizerIntent.RESULT_CLIENT_ERROR) {
+            } else if (resultCode == RecognizerIntent.RESULT_CLIENT_ERROR) {
                 showToastMessage("Client Error");
-            }else if(resultCode == RecognizerIntent.RESULT_NETWORK_ERROR) {
+            } else if (resultCode == RecognizerIntent.RESULT_NETWORK_ERROR) {
                 showToastMessage("Network Error");
-            }else if(resultCode == RecognizerIntent.RESULT_NO_MATCH) {
+            } else if (resultCode == RecognizerIntent.RESULT_NO_MATCH) {
                 showToastMessage("No Match");
-            }else if(resultCode == RecognizerIntent.RESULT_SERVER_ERROR) {
+            } else if (resultCode == RecognizerIntent.RESULT_SERVER_ERROR) {
                 showToastMessage("Server Error");
-            }else if(resultCode == RESULT_CANCELED) {
+            } else if (resultCode == RESULT_CANCELED) {
                 showToastMessage("Canceled");
                 loopValue = false;
             }
@@ -280,10 +431,11 @@ public class VoiceTextActivity extends AppCompatActivity{
             recBut.callOnClick();
         }
     }
+
     /**
      * Helper method to show the toast message
      **/
-    void showToastMessage(String message){
+    void showToastMessage(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }
