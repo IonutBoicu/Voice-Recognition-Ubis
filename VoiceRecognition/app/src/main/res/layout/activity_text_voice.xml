@@ -1,28 +1,36 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="unicredit.voicerecognition.TextVoiceActivity">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp">
+        <EditText
+            android:id="@+id/playTextBox"
+            android:scrollbars="vertical"
+            android:inputType="textMultiLine"
+            android:layout_width="wrap_content"
+            android:layout_height="200dp"
+            android:hint="@string/enter_text_to_play"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+    </RelativeLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Text - Voice Page"
-        android:id="@+id/textView"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-    <Button
-        android:layout_width="50dp"
-        android:layout_height="wrap_content"
-        android:drawableLeft="@drawable/ic_view_headline_black_24dp"
-        android:id="@+id/backBtn"
-        android:background="@android:color/transparent"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:enabled="true"
-        android:onClick="goBack" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <Button
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/ic_play_arrow_black_24dp"
+            android:id="@+id/recButton"
+            android:background="@android:color/transparent"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:enabled="true"
+            android:onClick="play" />
 
-</RelativeLayout>
+    </RelativeLayout>
+</LinearLayout>
