@@ -29,8 +29,7 @@
             android:background="@android:color/transparent"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:enabled="true"
-            android:onClick="play" />
+            android:enabled="true" />
 
     </RelativeLayout>
 </LinearLayout>
