@@ -7,13 +7,59 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import android.app.Activity;
+import android.hardware.SensorManager;
+import android.speech.tts.TextToSpeech;
+import android.util.Log;
+
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+
+import java.util.List;
+import java.util.Locale;
+
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
+import android.widget.Toast;
+
 public class TextVoiceActivity extends AppCompatActivity {
+    TextToSpeech tts;
+    EditText ed;
+    Button butt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_text_voice);
         this.setTitle("Text to Voice");
+        ed = (EditText)findViewById(R.id.playTextBox);
+        butt = (Button)findViewById(R.id.playButton);
+        tts = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if (status != TextToSpeech.ERROR) {
+                    tts.setLanguage(Locale.UK);
+                }
+            }
+        });
+
+        butt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            @SuppressWarnings("deprecation")
+            public void onClick(View v) {
+                String speaking = ed.getText().toString();
+                tts.speak(speaking, TextToSpeech.QUEUE_FLUSH, null);
+            }
+        });
+    }
+
+    public void onPause() {
+        if (tts != null) {
+            tts.stop();
+            tts.shutdown();
+        }
+        super.onPause();
     }
 
     public void goBack(View view) {
