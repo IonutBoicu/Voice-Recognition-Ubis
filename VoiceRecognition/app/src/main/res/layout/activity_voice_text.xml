@@ -26,8 +26,7 @@
             android:background="@android:color/transparent"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:enabled="true"
-            android:onClick="speak" />
+            android:enabled="true" />
         <Button
             android:layout_width="50dp"
             android:layout_height="wrap_content"

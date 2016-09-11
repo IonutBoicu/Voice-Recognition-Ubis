@@ -2,13 +2,17 @@ package unicredit.voicerecognition;
 
 import android.app.Activity;
 import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Bundle;
+import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
+import android.speech.SpeechRecognizer;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,11 +34,139 @@ public class VoiceTextActivity extends AppCompatActivity{
     public static final String EXTRA_PATTERN_DATA = "android.speech.extra.PATTERN_DATA";
     public static final String EXTRA_DEFAULT_WEB_SEARCH_ACTION = "android.speech.extra.DEFAULT_WEB_SEARCH_ACTION";
 
+    private String LOG_TAG = "VoiceRecognitionActivity";
+    private Context currentContext = this;
+
     private Button recBut;
     private EditText edText;
 
+    private SpeechRecognizer speech = null;
+    private Intent recognizerIntent = null;
+
+    boolean recordStatus = false;
+
     boolean loopValue = true;
     float[] pattern_data;
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+//        if (speech != null) {
+//            speech.destroy();
+//            Log.i(LOG_TAG, "destroy");
+//        }
+
+    }
+
+    protected class SpeechRecognitionListener implements RecognitionListener {
+
+        @Override
+        public void onResults(Bundle results) {
+            ArrayList<String> matches = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+            // matches are the return values of speech recognition engine
+            // Use these values for whatever you wish to do
+            String res = matches.get(0);
+            String old = edText.getText().toString();
+            edText.setText(old + " " + res, TextView.BufferType.EDITABLE);
+
+            if (recordStatus == true) {
+                speech.stopListening();
+                speech.destroy();
+                speech = SpeechRecognizer.createSpeechRecognizer(currentContext);
+                speech.setRecognitionListener(new SpeechRecognitionListener());
+                speech.startListening(recognizerIntent);
+            }
+        }
+
+        @Override
+        public void onPartialResults(Bundle bundle) {
+
+        }
+
+        @Override
+        public void onEvent(int i, Bundle bundle) {
+            Log.i(LOG_TAG, "onEvent");
+        }
+
+        @Override
+        public void onReadyForSpeech(Bundle bundle) {
+            Log.i(LOG_TAG, "onReadyForSpeech");
+        }
+
+        @Override
+        public void onBeginningOfSpeech() {
+            Log.i(LOG_TAG, "onBeginningOfSpeech");
+        }
+
+        @Override
+        public void onRmsChanged(float rmsdB) {
+        }
+
+        @Override
+        public void onBufferReceived(byte[] bytes) {
+
+        }
+
+        @Override
+        public void onEndOfSpeech() {
+            Log.i(LOG_TAG, "onEndOfSpeech");
+        }
+
+        @Override
+        public void onError(int i) {
+            Log.d(LOG_TAG, "FAILED " + getErrorText(i));
+
+            if (recordStatus == true) {
+                speech.stopListening();
+                speech.destroy();
+                speech = SpeechRecognizer.createSpeechRecognizer(currentContext);
+                speech.setRecognitionListener(new SpeechRecognitionListener());
+                speech.startListening(recognizerIntent);
+            }
+        }
+
+        public String getErrorText(int errorCode) {
+            String message;
+            switch (errorCode) {
+                case SpeechRecognizer.ERROR_AUDIO:
+                    message = "Audio recording error";
+                    break;
+                case SpeechRecognizer.ERROR_CLIENT:
+                    message = "Client side error";
+                    break;
+                case SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS:
+                    message = "Insufficient permissions";
+                    break;
+                case SpeechRecognizer.ERROR_NETWORK:
+                    message = "Network error";
+                    break;
+                case SpeechRecognizer.ERROR_NETWORK_TIMEOUT:
+                    message = "Network timeout";
+                    break;
+                case SpeechRecognizer.ERROR_NO_MATCH:
+                    message = "No match";
+                    break;
+                case SpeechRecognizer.ERROR_RECOGNIZER_BUSY:
+                    message = "RecognitionService busy";
+                    break;
+                case SpeechRecognizer.ERROR_SERVER:
+                    message = "error from server";
+                    break;
+                case SpeechRecognizer.ERROR_SPEECH_TIMEOUT:
+                    message = "No speech input";
+                    break;
+                default:
+                    message = "Didn't understand, please try again.";
+                    break;
+            }
+            return message;
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +178,32 @@ public class VoiceTextActivity extends AppCompatActivity{
         edText = (EditText) findViewById(R.id.recTextBox);
         edText.setKeyListener(null);
         checkVoiceRecognition();
+
+
+        speech = SpeechRecognizer.createSpeechRecognizer(this);
+        speech.setRecognitionListener(new SpeechRecognitionListener());
+        recognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        recognizerIntent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getClass()
+                .getPackage().getName());
+        recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,
+                "ro");
+
+        recBut.setOnClickListener(new View.OnClickListener() {
+                                      @Override
+                                      public void onClick(View view) {
+                                          if (recordStatus == false) {
+                                              edText.setText("");
+                                              recordStatus = true;
+                                              speech.startListening(recognizerIntent);
+                                          } else {
+                                              recordStatus = false;
+                                              speech.stopListening();
+                                          }
+                                      }
+                                  }
+        );
     }
 
     @Override
