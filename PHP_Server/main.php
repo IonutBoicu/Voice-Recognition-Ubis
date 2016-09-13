@@ -29,5 +29,42 @@ if (socket_listen($sock, 5) === false) {
     echo "socket_listen() failed: reason: " . socket_strerror(socket_last_error($sock)) . "\n";
 }
 
+$socks = [$sock];
+
+do {
+    $read = $socks;
+    $write = NULL;
+    $except = NULL;
+    $sec = NULL;
+    if (socket_select($read, $write, $except, $sec) == false) {
+        break;
+    }
+    
+    if (in_array($sock, $read)) {
+        $socks[] = $newsock = socket_accept($sock);
+        $key = array_search($sock, $read);
+        unset($read[$key]);
+        
+        echo "New client connected " . $newsock . "\n";
+    }
+    
+    foreach ($read as $read_sock) {
+        $buf = '';
+        $buf = socket_read($read_sock, 2048, PHP_NORMAL_READ);
+        
+        if ($buf == false) {
+            $key = array_search($read_sock, $socks);
+            
+            socket_close($read_sock);
+
+            unset($socks[$key]);
+            echo "Client disconnected " . $read_sock . "\n";
+            continue;
+        }
+        if (!$buf = trim($buf)) {
+            continue;
+        }
+	}
+} while (true);
 socket_close($sock);
 ?>

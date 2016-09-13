@@ -33,4 +33,27 @@ function getColidingEvents($conn, $start_date, $end_date, $id_room) {
     
     return $conn->query($query)->fetch_all();
 }
+
+function getAllEvents($conn) {
+    $query = "SELECT r.name rname, e.id, e.name, "
+            . "e.start_date, "
+            . "e.end_date "
+            . "FROM best_smart.events e, best_smart.rooms r "
+            . "WHERE e.id_room = r.id "
+            . "ORDER BY start_date ASC";
+    
+    return $conn->query($query);
+}
+
+function getEventsByUser($conn, $email) {
+    
+    $query = "SELECT r.name rname, e.id, e.name, "
+            . "e.start_date, "
+            . "e.end_date "
+            . "FROM best_smart.events e, best_smart.rooms r "
+            . "WHERE e.host_email = '$email' and e.id_room = r.id "
+            . "ORDER BY e.start_date ASC";
+    
+    return $conn->query($query);
+}
 ?>
