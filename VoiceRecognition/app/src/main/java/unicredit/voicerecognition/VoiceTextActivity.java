@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
@@ -47,6 +48,8 @@ public class VoiceTextActivity extends AppCompatActivity{
 
     boolean loopValue = true;
     float[] pattern_data;
+
+    AudioManager amanager;
 
     @Override
     public void onResume() {
@@ -204,6 +207,9 @@ public class VoiceTextActivity extends AppCompatActivity{
                                       }
                                   }
         );
+
+        amanager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+        amanager.setStreamVolume(AudioManager.STREAM_MUSIC, 0, 0);
     }
 
     @Override

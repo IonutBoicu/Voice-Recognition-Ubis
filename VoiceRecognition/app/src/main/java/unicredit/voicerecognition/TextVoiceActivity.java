@@ -1,6 +1,8 @@
 package unicredit.voicerecognition;
 
+import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -30,11 +32,16 @@ public class TextVoiceActivity extends Activity implements View.OnClickListener,
     //status check code
     private int MY_DATA_CHECK_CODE = 0;
 
+    AudioManager amanager;
+
     //create the Activity
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_text_voice);
+
+        amanager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+        amanager.setStreamVolume(AudioManager.STREAM_MUSIC, 100, 0);
 
         //check for TTS data
         Intent checkTTSIntent = new Intent();
