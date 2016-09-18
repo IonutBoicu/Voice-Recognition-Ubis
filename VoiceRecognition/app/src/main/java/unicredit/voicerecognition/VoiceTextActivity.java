@@ -20,6 +20,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,8 +39,9 @@ public class VoiceTextActivity extends AppCompatActivity{
     private String LOG_TAG = "VoiceRecognitionActivity";
     private Context currentContext = this;
 
-    private Button recBut;
+    private ImageButton recBut;
     private EditText edText;
+    private TextView hint;
 
     private SpeechRecognizer speech = null;
     private Intent recognizerIntent = null;
@@ -177,9 +179,10 @@ public class VoiceTextActivity extends AppCompatActivity{
         this.setTitle("Voice to Text");
 
         setContentView(R.layout.activity_voice_text);
-        recBut = (Button) findViewById(R.id.recButton);
+        recBut = (ImageButton) findViewById(R.id.recButton);
         edText = (EditText) findViewById(R.id.recTextBox);
         edText.setKeyListener(null);
+        hint = (TextView) findViewById(R.id.hint);
         checkVoiceRecognition();
 
 
@@ -199,9 +202,13 @@ public class VoiceTextActivity extends AppCompatActivity{
                                           if (recordStatus == false) {
                                               edText.setText("");
                                               recordStatus = true;
+                                              recBut.setImageResource(R.drawable.mic_blue2);
+                                              hint.setText(R.string.tap_to_stop);
                                               speech.startListening(recognizerIntent);
                                           } else {
                                               recordStatus = false;
+                                              recBut.setImageResource(R.drawable.mic_black2);
+                                              hint.setText(R.string.tap_to_speak);
                                               speech.stopListening();
                                           }
                                       }
