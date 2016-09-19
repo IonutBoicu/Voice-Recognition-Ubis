@@ -88,6 +88,18 @@ do {
                 $email = $arr[1];
                 delUserAction($read_sock, $conn, $email);
                 break;
+                
+            case "GET_ALL_USERS":
+                echo "GET_ALL_USERS\n";
+                getAllUsersAction($read_sock, $conn);
+                break;
+                
+            case "SET_USER":
+                echo "SET_USER";
+                $email = $arr[1];
+                $val = $arr[2];
+                setUserAction($read_sock, $conn, $email, $val);
+                break;
         }
 	}
 } while (true);
