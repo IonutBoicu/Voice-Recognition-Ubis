@@ -64,6 +64,31 @@ do {
         if (!$buf = trim($buf)) {
             continue;
         }
+        $arr = explode("#", $buf);
+        
+        $action = $arr[0];
+        
+        switch ($action) {
+            case "LOGIN" :
+                echo "LOGIN\n";
+                $email = $arr[1];
+                $password = md5($arr[2]);
+                loginAction($read_sock, $conn, $email, $password);
+                break;
+                
+            case "ADD_USER":
+                echo "ADD_USER\n";
+                $email = $arr[1];
+                $pass = md5($arr[2]);
+                addUserAction($read_sock, $conn, $email, $pass);
+                break;
+                
+            case "DEL_USER":
+                echo "DEL_USER\n";
+                $email = $arr[1];
+                delUserAction($read_sock, $conn, $email);
+                break;
+        }
 	}
 } while (true);
 socket_close($sock);
